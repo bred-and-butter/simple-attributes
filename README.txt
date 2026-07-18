@@ -1,0 +1,1 @@
+A mod that adds simple, but unique attributes to the game.
