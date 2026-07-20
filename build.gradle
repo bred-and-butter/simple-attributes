@@ -120,6 +120,12 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -144,6 +150,17 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    // mixin
+    /*annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.2"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.3.2")) {
+        jarJar.ranged(it, "[0.3.2,)")
+    }*/
+
+    // dummy target
+    /*implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:7963208")
+    implementation fg.deobf("curse.maven:selene-499980:8261419")*/
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
