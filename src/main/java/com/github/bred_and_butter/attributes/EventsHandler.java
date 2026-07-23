@@ -51,7 +51,6 @@ public class EventsHandler {
         }
     }*/
 
-
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
         // 1. Tamed Damage – bonus damage dealt by tamed mobs
