@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 public class EnergyShieldProvider implements ICapabilitySerializable<CompoundTag> {
-    private final LazyOptional<IEnergyShield> instance = LazyOptional.of(this::createEnergyShield);
+    private final LazyOptional<EnergyShield> instance = LazyOptional.of(this::createEnergyShield);
 
     private EnergyShield energyShield = null;
 
@@ -39,6 +39,6 @@ public class EnergyShieldProvider implements ICapabilitySerializable<CompoundTag
     }
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        energyShield.setShield(nbt.getFloat("currentShield"));
+        createEnergyShield().setShield(nbt.getFloat("currentShield"));
     }
 }

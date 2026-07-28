@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = SimpleAttributes.MODID)
 public class EnergyShieldCapability {
-    public static final Capability<IEnergyShield> INSTANCE =
+    public static final Capability<EnergyShield> INSTANCE =
             CapabilityManager.get(new CapabilityToken<>(){});
 
     @SubscribeEvent
     public static void register(RegisterCapabilitiesEvent event) {
-        event.register(IEnergyShield.class);
+        event.register(EnergyShield.class);
     }
 }

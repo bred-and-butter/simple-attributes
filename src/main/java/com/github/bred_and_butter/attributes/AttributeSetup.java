@@ -10,12 +10,11 @@ import net.minecraftforge.fml.common.Mod;
 public class AttributeSetup {
     @SubscribeEvent
     public static void onEntityAttributeModification(EntityAttributeModificationEvent event) {
-        // Add both custom attributes to the player entity
+        // Add custom attributes to the player entity
         event.add(EntityType.PLAYER, AttributeRegister.TAMED_DAMAGE.get());
         event.add(EntityType.PLAYER, AttributeRegister.TAMED_RESISTANCE.get());
         event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD.get());
         event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD_RECHARGE_DELAY.get());
         event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD_RECHARGE_RATE.get());
     }
-
 }

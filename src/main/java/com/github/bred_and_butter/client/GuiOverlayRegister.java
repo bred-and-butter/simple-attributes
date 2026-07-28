@@ -63,7 +63,6 @@ public class GuiOverlayRegister {
             int x = left + (col % 10) * 8; // 10 hearts per visual row, 8px apart
             int y = shieldTop - row * 10;  // each additional row moves upward
 
-
             int u = getU(i, shieldHalfHearts, currentShield);
 
             guiGraphics.blit(guiIconsLocation, x, y, u, 0, 9, 9, 256, 256);

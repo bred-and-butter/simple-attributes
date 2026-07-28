@@ -76,6 +76,7 @@ public class EventsHandler {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide) return;
 
+        // Energy Shield Regen
         Player player = event.player;
         player.getCapability(EnergyShieldCapability.INSTANCE).ifPresent(shield -> {
             double maxShield = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD.get());
