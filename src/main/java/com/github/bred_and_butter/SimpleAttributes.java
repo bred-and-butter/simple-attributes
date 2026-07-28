@@ -1,5 +1,6 @@
 package com.github.bred_and_butter;
 
+import com.github.bred_and_butter.network.NetworkHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.Blocks;
@@ -38,6 +39,8 @@ public class SimpleAttributes
         MinecraftForge.EVENT_BUS.register(this);
 
         ATTRIBUTES.register(modEventBus);
+
+        NetworkHandler.register();
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
