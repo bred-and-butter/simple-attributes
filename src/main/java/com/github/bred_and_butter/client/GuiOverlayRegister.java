@@ -40,7 +40,7 @@ public class GuiOverlayRegister {
         if (currentShield <= 0.0F) return;
 
         // Convert to number of full half‑hearts to draw (rounded up for the last one)
-        int shieldHalfHearts = Mth.ceil(currentShield);
+        int shieldHalfHearts = Mth.ceil(currentShield/2);
         // How many half‑hearts of regular health the player has (used for layout)
         //int healthHalfHearts = Mth.ceil(player.getHealth());
         int absorptionHalfHearts = Mth.ceil(player.getAbsorptionAmount());
@@ -63,7 +63,7 @@ public class GuiOverlayRegister {
             int x = left + (col % 10) * 8; // 10 hearts per visual row, 8px apart
             int y = shieldTop - row * 10;  // each additional row moves upward
 
-            int u = getU(i, shieldHalfHearts, currentShield);
+            int u = getFullOrHalfHeart(i, shieldHalfHearts, currentShield);
 
             guiGraphics.blit(guiIconsLocation, x, y, u, 0, 9, 9, 256, 256);
         }
@@ -72,9 +72,11 @@ public class GuiOverlayRegister {
         RenderSystem.disableBlend();
     }
 
-    private static int getU(int i, int shieldHalfHearts, float currentShield) {
+    private static int getFullOrHalfHeart(int i, int shieldHalfHearts, float currentShield) {
         // Determine whether this slot is a full heart or half heart
-        boolean half = (i == shieldHalfHearts - 1) && (currentShield % 1.0F != 0.0F);
+        boolean half = (i == shieldHalfHearts - 1) && (currentShield % 2.0F != 0.0F);
+
+        //int half = (int) (currentShield % 2);
         //int vOffset = 0;               // vanilla heart texture vertical offset (full or half)
         //int uOffset = 16;              // start of the first heart icon (0 is the container)
 
