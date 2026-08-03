@@ -1,4 +1,7 @@
 {
   "attribute.simpleattributes.tamed_damage": "Tamed Damage",
-  "attribute.simpleattributes.tamed_resistance": "Tamed Resistance"
+  "attribute.simpleattributes.tamed_resistance": "Tamed Resistance",
+  "attribute.simpleattributes.energy_shield_max": "Max Energy Shield",
+  "attribute.simpleattributes.energy_shield_recharge_delay": "Energy Shield Recharge Delay",
+  "attribute.simpleattributes.energy_shield_recharge_rate": "Energy Shield Recharge Rate"
 }

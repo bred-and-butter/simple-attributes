@@ -13,7 +13,7 @@ public class AttributeSetup {
         // Add custom attributes to the player entity
         event.add(EntityType.PLAYER, AttributeRegister.TAMED_DAMAGE.get());
         event.add(EntityType.PLAYER, AttributeRegister.TAMED_RESISTANCE.get());
-        event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD.get());
+        event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD_MAX.get());
         event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD_RECHARGE_DELAY.get());
         event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD_RECHARGE_RATE.get());
     }

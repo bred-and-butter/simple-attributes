@@ -28,12 +28,7 @@ public class EventsHandler {
 
         if (!player.level().isClientSide) {
             player.getCapability(EnergyShieldCapability.INSTANCE).ifPresent(shield -> {
-                if (!player.level().isClientSide) {
-                    NetworkHandler.CHANNEL.send(
-                            PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
-                            new SyncEnergyShieldPacket(shield.getShield())
-                    );
-                }
+                NetworkHandler.syncShieldToClient(player, shield);
             });
         }
     }
@@ -78,12 +73,7 @@ public class EventsHandler {
                     float absorbed = Math.min(event.getAmount(), currentShield);
                     shield.setShield(currentShield - absorbed);
 
-                    if (!player.level().isClientSide) {
-                        NetworkHandler.CHANNEL.send(
-                                PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
-                                new SyncEnergyShieldPacket(shield.getShield())
-                        );
-                    }
+                    NetworkHandler.syncShieldToClient(player, shield);
 
                     event.setAmount(event.getAmount() - absorbed);
 
@@ -104,7 +94,7 @@ public class EventsHandler {
         // Energy Shield Regen
         Player player = event.player;
         player.getCapability(EnergyShieldCapability.INSTANCE).ifPresent(shield -> {
-            double maxShield = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD.get());
+            double maxShield = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD_MAX.get());
             float current = shield.getShield();
 
             // Clamp to new max if it was reduced externally
@@ -125,10 +115,7 @@ public class EventsHandler {
                         float newShield = (float) Math.min(maxShield, current + rate);
                         shield.setShield(newShield);
 
-                        NetworkHandler.CHANNEL.send(
-                                PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
-                                new SyncEnergyShieldPacket(newShield)
-                        );
+                        NetworkHandler.syncShieldToClient(player, shield);
                     }
                 }
             }

@@ -23,9 +23,9 @@ public class AttributeRegister {
             () -> new RangedAttribute("attribute.simpleattributes.tamed_resistance", 0.0D, -1024.0D, 100.0D).setSyncable(true)
     );
 
-    public static final RegistryObject<Attribute> ENERGY_SHIELD =
-            ATTRIBUTES.register("energy_shield",
-                    () -> new RangedAttribute("attribute.simpleattributes.energy_shield", 0.0, 0.0, 1024.0)
+    public static final RegistryObject<Attribute> ENERGY_SHIELD_MAX =
+            ATTRIBUTES.register("energy_shield_max",
+                    () -> new RangedAttribute("attribute.simpleattributes.energy_shield_max", 0.0, 0.0, 1024.0)
                             .setSyncable(true));
 
     public static final RegistryObject<Attribute> ENERGY_SHIELD_RECHARGE_DELAY =
