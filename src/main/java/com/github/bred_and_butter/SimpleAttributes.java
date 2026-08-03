@@ -1,5 +1,6 @@
 package com.github.bred_and_butter;
 
+import com.github.bred_and_butter.effects.EffectRegister;
 import com.github.bred_and_butter.network.NetworkHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 import static com.github.bred_and_butter.attributes.AttributeRegister.ATTRIBUTES;
+import static com.github.bred_and_butter.effects.EffectRegister.MOB_EFFECTS;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(SimpleAttributes.MODID)
@@ -36,6 +38,8 @@ public class SimpleAttributes
         MinecraftForge.EVENT_BUS.register(this);
 
         ATTRIBUTES.register(modEventBus);
+
+        MOB_EFFECTS.register(modEventBus);
 
         NetworkHandler.register();
 
