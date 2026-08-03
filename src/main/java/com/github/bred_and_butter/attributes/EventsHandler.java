@@ -10,7 +10,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
@@ -19,6 +21,22 @@ import org.slf4j.Logger;
 @Mod.EventBusSubscriber(modid = SimpleAttributes.MODID)
 public class EventsHandler {
     private static final Logger LOGGER = LogUtils.getLogger();
+
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getEntity();
+
+        if (!player.level().isClientSide) {
+            player.getCapability(EnergyShieldCapability.INSTANCE).ifPresent(shield -> {
+                if (!player.level().isClientSide) {
+                    NetworkHandler.CHANNEL.send(
+                            PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+                            new SyncEnergyShieldPacket(shield.getShield())
+                    );
+                }
+            });
+        }
+    }
 
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
@@ -44,11 +62,18 @@ public class EventsHandler {
                 event.setAmount(Math.max(1, (float) (event.getAmount() * (1 - (reduction/100)))));
             }
         }
+    }
 
+    @SubscribeEvent
+    public static void onLivingDamage(LivingDamageEvent event) {
         // Energy Shield Protection
         if (event.getEntity() instanceof Player player && !player.level().isClientSide) {
             player.getCapability(EnergyShieldCapability.INSTANCE).ifPresent(shield -> {
-                float currentShield = shield.getShield();
+                shield.setLastDamageTick(player.level().getGameTime());
+
+                LOGGER.info(String.valueOf(shield.getShield()));
+
+               float currentShield = shield.getShield();
                 if (currentShield > 0) {
                     float absorbed = Math.min(event.getAmount(), currentShield);
                     shield.setShield(currentShield - absorbed);
@@ -96,14 +121,15 @@ public class EventsHandler {
 
                 if (gameTime - lastDamage >= delayTicks) {
                     double rate = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD_RECHARGE_RATE.get());
-                    double perTick = rate / 10.0;   // amount per half‑second → per tick
-                    float newShield = (float) Math.min(maxShield, current + perTick);
-                    shield.setShield(newShield);
+                    if (gameTime % 10 == 0) {
+                        float newShield = (float) Math.min(maxShield, current + rate);
+                        shield.setShield(newShield);
 
-                    NetworkHandler.CHANNEL.send(
-                            PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
-                            new SyncEnergyShieldPacket(newShield)
-                    );
+                        NetworkHandler.CHANNEL.send(
+                                PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+                                new SyncEnergyShieldPacket(newShield)
+                        );
+                    }
                 }
             }
         });
