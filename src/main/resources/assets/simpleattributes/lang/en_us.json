@@ -4,6 +4,7 @@
   "attribute.simpleattributes.energy_shield_max": "Max Energy Shield",
   "attribute.simpleattributes.energy_shield_recharge_delay": "Energy Shield Recharge Delay",
   "attribute.simpleattributes.energy_shield_recharge_rate": "Energy Shield Recharge Rate",
+  "attribute.simpleattributes.life_steal": "Life Steal",
 
   "effect.simpleattributes.broken_shield": "Broken Energy Shield",
   "effect.simpleattributes.bonus_shield": "Bonus Energy Shield",

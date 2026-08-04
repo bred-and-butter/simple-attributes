@@ -16,5 +16,6 @@ public class AttributeSetup {
         event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD_MAX.get());
         event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD_RECHARGE_DELAY.get());
         event.add(EntityType.PLAYER, AttributeRegister.ENERGY_SHIELD_RECHARGE_RATE.get());
+        event.add(EntityType.PLAYER, AttributeRegister.LIFE_STEAL.get());
     }
 }

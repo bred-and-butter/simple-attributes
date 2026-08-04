@@ -37,4 +37,9 @@ public class AttributeRegister {
             ATTRIBUTES.register("energy_shield_recharge_rate",
                     () -> new RangedAttribute("attribute.simpleattributes.energy_shield_recharge_rate", 1.0, 0.0, 1024.0)
                             .setSyncable(true));
+
+    public static final RegistryObject<Attribute> LIFE_STEAL =
+            ATTRIBUTES.register("life_steal",
+                    () -> new RangedAttribute("attribute.simpleattributes.life_steal", 0.0, 0.0, 1024.0)
+                            .setSyncable(true));
 }

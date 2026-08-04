@@ -7,6 +7,7 @@ import com.github.bred_and_butter.network.SyncEnergyShieldPacket;
 import com.mojang.logging.LogUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
@@ -85,6 +86,18 @@ public class EventsHandler {
                 }
             });
         }
+    }
+
+    @SubscribeEvent
+    public static void lifeSteal(LivingDamageEvent event) {
+        Player player;
+        Entity entity = event.getSource().getEntity();
+        if (entity instanceof Player) {
+            player = (Player) entity;
+        } else return;
+
+        double lifeSteal = player.getAttributeValue(AttributeRegister.LIFE_STEAL.get());
+        player.heal((float) (event.getAmount() * lifeSteal/100));
     }
 
     @SubscribeEvent
