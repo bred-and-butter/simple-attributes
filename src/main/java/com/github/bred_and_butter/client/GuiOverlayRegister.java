@@ -34,7 +34,8 @@ public class GuiOverlayRegister {
     private static void renderEnergyShield(ForgeGui gui, GuiGraphics guiGraphics, int screenWidth, int screenHeight) {
         Minecraft mc = gui.getMinecraft();
         Player player = mc.player;
-        if (player == null || player.isCreative() || player.isSpectator()) return;
+        //if (player == null || player.isCreative() || player.isSpectator()) return;
+        if (player == null || !gui.shouldDrawSurvivalElements() || Minecraft.getInstance().options.hideGui) return;
 
         float currentShield = ClientEnergyShield.get();
         if (currentShield <= 0.0F) return;

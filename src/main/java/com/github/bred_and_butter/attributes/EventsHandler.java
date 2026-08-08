@@ -114,6 +114,7 @@ public class EventsHandler {
             if (current > maxShield) {
                 shield.setShield((float) maxShield);
                 current = (float) maxShield;
+                NetworkHandler.syncShieldToClient(player, shield);
             }
 
             if (current < maxShield && player.isAlive()) {
