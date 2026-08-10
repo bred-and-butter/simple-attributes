@@ -2,13 +2,25 @@ package com.github.bred_and_butter.capabilities.energy_shield;
 
 public class EnergyShield {
     private float shield = 0;
-    private long lastDamageTick;
+    private int ticksSinceLastDamage;
+    private boolean isBroken;
 
     public float getShield() { return shield; }
 
     public void setShield(float shield) { this.shield = Math.max(0, shield); }
 
-    public long getLastDamageTick() { return lastDamageTick; }
+    public boolean isBroken () {
+        return this.isBroken;
+    }
 
-    public void setLastDamageTick(long tick) { this.lastDamageTick = tick; }
+    public void setBroken(boolean broken) {
+        isBroken = broken;
+        this.shield = 0;
+    }
+
+    public int getTicksSinceLastDamage() { return ticksSinceLastDamage; }
+
+    public void resetTicksSinceLastDamage() { this.ticksSinceLastDamage = 0; }
+
+    public void incrementTicksSinceLastDamage() { this.ticksSinceLastDamage++; }
 }

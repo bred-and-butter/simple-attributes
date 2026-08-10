@@ -1,22 +1,23 @@
-package com.github.bred_and_butter.attributes;
+package com.github.bred_and_butter;
 
-import com.github.bred_and_butter.SimpleAttributes;
-import com.github.bred_and_butter.capabilities.energy_shield.EnergyShieldCapability;
+import com.github.bred_and_butter.attributes.AttributeRegister;
+import com.github.bred_and_butter.capabilities.energy_shield.EnergyShield;
+import com.github.bred_and_butter.capabilities.energy_shield.EnergyShieldProvider;
 import com.github.bred_and_butter.network.NetworkHandler;
-import com.github.bred_and_butter.network.SyncEnergyShieldPacket;
 import com.mojang.logging.LogUtils;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
 import org.slf4j.Logger;
 
 @Mod.EventBusSubscriber(modid = SimpleAttributes.MODID)
@@ -28,9 +29,18 @@ public class EventsHandler {
         Player player = event.getEntity();
 
         if (!player.level().isClientSide) {
-            player.getCapability(EnergyShieldCapability.INSTANCE).ifPresent(shield -> {
+            player.getCapability(EnergyShieldProvider.INSTANCE).ifPresent(shield -> {
                 NetworkHandler.syncShieldToClient(player, shield);
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void playerClone(PlayerEvent.Clone event) {
+        if (event.isWasDeath()) {
+            event.getOriginal().getCapability(EnergyShieldProvider.INSTANCE).ifPresent(
+                    oldStore -> event.getOriginal().getCapability(EnergyShieldProvider.INSTANCE)
+            );
         }
     }
 
@@ -64,8 +74,8 @@ public class EventsHandler {
     public static void onLivingDamage(LivingDamageEvent event) {
         // Energy Shield Protection
         if (event.getEntity() instanceof Player player && !player.level().isClientSide) {
-            player.getCapability(EnergyShieldCapability.INSTANCE).ifPresent(shield -> {
-                shield.setLastDamageTick(player.level().getGameTime());
+            player.getCapability(EnergyShieldProvider.INSTANCE).ifPresent(shield -> {
+                shield.resetTicksSinceLastDamage();
 
                 LOGGER.info(String.valueOf(shield.getShield()));
 
@@ -77,12 +87,6 @@ public class EventsHandler {
                     NetworkHandler.syncShieldToClient(player, shield);
 
                     event.setAmount(event.getAmount() - absorbed);
-
-                    shield.setLastDamageTick(player.level().getGameTime());
-                } else {
-                    if (event.getAmount() > 0) {
-                        shield.setLastDamageTick(player.level().getGameTime());
-                    }
                 }
             });
         }
@@ -106,7 +110,7 @@ public class EventsHandler {
 
         // Energy Shield Regen
         Player player = event.player;
-        player.getCapability(EnergyShieldCapability.INSTANCE).ifPresent(shield -> {
+        player.getCapability(EnergyShieldProvider.INSTANCE).ifPresent(shield -> {
             double maxShield = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD_MAX.get());
             float current = shield.getShield();
 
@@ -118,21 +122,38 @@ public class EventsHandler {
             }
 
             if (current < maxShield && player.isAlive()) {
-                long gameTime = player.level().getGameTime();
-                long lastDamage = shield.getLastDamageTick();
-                double delaySeconds = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD_RECHARGE_DELAY.get());
-                long delayTicks = (long) (delaySeconds * 20);
+                int playerTime = player.tickCount;
+                int lastDamage = shield.getTicksSinceLastDamage();
+                double shieldDelay = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD_RECHARGE_DELAY.get());
+                int delayTicks = (int) (shieldDelay * 20);
 
-                if (gameTime - lastDamage >= delayTicks) {
+                if (lastDamage >= delayTicks) {
                     double rate = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD_RECHARGE_RATE.get());
-                    if (gameTime % 10 == 0) {
+                    if (playerTime % 10 == 0) {
                         float newShield = (float) Math.min(maxShield, current + rate);
                         shield.setShield(newShield);
 
                         NetworkHandler.syncShieldToClient(player, shield);
                     }
+                } else {
+                    shield.incrementTicksSinceLastDamage();
                 }
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void register(RegisterCapabilitiesEvent event) {
+        event.register(EnergyShield.class);
+    }
+
+    @SubscribeEvent
+    public static void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof Player) {
+            event.addCapability(
+                    new ResourceLocation(SimpleAttributes.MODID, "energy_shield"),
+                    new EnergyShieldProvider()
+            );
+        }
     }
 }
