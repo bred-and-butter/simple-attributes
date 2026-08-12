@@ -1,42 +1,33 @@
 package com.github.bred_and_butter.client;
 
-import com.github.bred_and_butter.SimpleAttributes;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
-@Mod.EventBusSubscriber(modid = SimpleAttributes.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class GuiOverlayRegister {
     private static final ResourceLocation SHIELD_HEARTS_LOCATION = new ResourceLocation("simpleattributes", "textures/overlay/icons.png");
 
-    @SubscribeEvent
-    public static void registerOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAbove(
-                VanillaGuiOverlay.PLAYER_HEALTH.id(),
-                "energy_shield",
-                (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-                    if (gui.getMinecraft().player == null) return;
-                    renderEnergyShield(gui, guiGraphics, screenWidth, screenHeight);
-                }
-        );
-    }
+    public static final IGuiOverlay SHIELD_GUI =
+            (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+                if (gui.getMinecraft().player == null || !gui.shouldDrawSurvivalElements() || Minecraft.getInstance().options.hideGui) return;
 
-    private static void renderEnergyShield(ForgeGui gui, GuiGraphics guiGraphics, int screenWidth, int screenHeight) {
-        Minecraft mc = gui.getMinecraft();
-        Player player = mc.player;
-        //if (player == null || player.isCreative() || player.isSpectator()) return;
-        if (player == null || !gui.shouldDrawSurvivalElements() || Minecraft.getInstance().options.hideGui) return;
+                gui.setupOverlayRenderState(true, false);
 
+                RenderSystem.depthMask(false);
+
+                Minecraft.getInstance().getProfiler().push("shield_gui");
+                renderEnergyShield(guiGraphics, screenWidth, screenHeight);
+                Minecraft.getInstance().getProfiler().pop();
+
+                RenderSystem.depthMask(true);
+
+                gui.setupOverlayRenderState(false, false);
+            };
+
+    private static void renderEnergyShield(GuiGraphics guiGraphics, int screenWidth, int screenHeight) {
         float currentShield = ClientEnergyShield.get();
         if (currentShield <= 0.0F) return;
 
@@ -54,7 +45,6 @@ public class GuiOverlayRegister {
 
         // Set up rendering tint – light blue colour for energy shield
         RenderSystem.setShaderTexture(0, SHIELD_HEARTS_LOCATION);
-        RenderSystem.enableBlend();
 
         for (int i = 0; i < shieldHalfHearts; i++) {
             int row = i / perRow;          // 0 = first row, 1 = second, etc.
@@ -69,8 +59,5 @@ public class GuiOverlayRegister {
 
             guiGraphics.blit(SHIELD_HEARTS_LOCATION, x, y, u, 0, 9, 9, 256, 256);
         }
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableBlend();
     }
 }
