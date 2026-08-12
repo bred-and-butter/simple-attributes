@@ -7,6 +7,6 @@
   "attribute.simpleattributes.life_steal": "Life Steal",
 
   "effect.simpleattributes.broken_shield": "Broken Energy Shield",
-  "effect.simpleattributes.bonus_shield": "Bonus Energy Shield",
+  "effect.simpleattributes.shield_boost": "Energy Shield Boost",
   "effect.simpleattributes.fast_regen": "Fast Shield Regen"
 }
