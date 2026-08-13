@@ -8,5 +8,17 @@
 
   "effect.simpleattributes.broken_shield": "Broken Energy Shield",
   "effect.simpleattributes.shield_boost": "Energy Shield Boost",
-  "effect.simpleattributes.fast_regen": "Fast Shield Regen"
+  "effect.simpleattributes.fast_regen": "Fast Shield Regen",
+  "effect.simpleattributes.instant_shield": "Instant Shield",
+  "effect.simpleattributes.regenerating": "Regenerating Shield",
+  "effect.simpleattributes.spent_shield": "Spent Shield",
+  "effect.simpleattributes.reduced_shield": "Reduced Energy Shield",
+
+  "effect.simpleattributes.broken_shield.description": "Broken Energy Shield",
+  "effect.simpleattributes.shield_boost.description": "Energy Shield Boost",
+  "effect.simpleattributes.fast_regen.description": "Fast Shield Regen",
+  "effect.simpleattributes.instant_shield.description": "Instant Shield",
+  "effect.simpleattributes.regenerating.description": "Does nothing. Just marks when the user's shields are regenerating",
+  "effect.simpleattributes.spent_shield.description": "Does nothing. Just marks when the user's shields are spent",
+  "effect.simpleattributes.reduced_shield.description": "Reduced Energy Shield"
 }

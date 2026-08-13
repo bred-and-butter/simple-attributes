@@ -3,10 +3,14 @@ package com.github.bred_and_butter;
 import com.github.bred_and_butter.attributes.AttributeRegister;
 import com.github.bred_and_butter.capabilities.energy_shield.EnergyShield;
 import com.github.bred_and_butter.capabilities.energy_shield.EnergyShieldProvider;
+import com.github.bred_and_butter.effects.EffectRegister;
 import com.github.bred_and_butter.network.NetworkHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
@@ -122,16 +126,20 @@ public class EventsHandler {
             }
 
             if (current < maxShield && player.isAlive()) {
-                int playerTime = player.tickCount;
                 int lastDamage = shield.getTicksSinceLastDamage();
                 double shieldDelay = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD_RECHARGE_DELAY.get());
                 int delayTicks = (int) (shieldDelay * 20);
 
+                if (current == 0 && player.tickCount % 10 == 0) {
+                    player.addEffect(new MobEffectInstance(EffectRegister.SPENT_SHIELD.get(), 20, 0));
+                }
+
                 if (lastDamage >= delayTicks) {
                     double rate = player.getAttributeValue(AttributeRegister.ENERGY_SHIELD_RECHARGE_RATE.get());
-                    if (playerTime % 10 == 0) {
+                    if (player.tickCount % 10 == 0) {
                         float newShield = (float) Math.min(maxShield, current + rate);
                         shield.setShield(newShield);
+                        player.addEffect(new MobEffectInstance(EffectRegister.REGENERATING.get(), 20, 0));
 
                         NetworkHandler.syncShieldToClient(player, shield);
                     }
