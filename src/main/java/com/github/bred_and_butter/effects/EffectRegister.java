@@ -28,11 +28,11 @@ public class EffectRegister {
     );
 
     public static final RegistryObject<MobEffect> REGENERATING = MOB_EFFECTS.register(
-            "regenerating", () -> new RegeneratingEffect(MobEffectCategory.BENEFICIAL, 0xA0A0A0)
+            "regenerating", () -> new RegeneratingEffect(MobEffectCategory.BENEFICIAL, 0x00FFFF)
     );
 
     public static final RegistryObject<MobEffect> SPENT_SHIELD = MOB_EFFECTS.register(
-            "spent_shield", () -> new SpentShieldEffect(MobEffectCategory.BENEFICIAL, 0x808080)
+            "spent_shield", () -> new SpentShieldEffect(MobEffectCategory.HARMFUL, 0x808080)
     );
 
     public static final RegistryObject<MobEffect> REDUCED_SHIELD = MOB_EFFECTS.register(

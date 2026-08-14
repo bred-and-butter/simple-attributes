@@ -8,9 +8,7 @@ import com.github.bred_and_butter.network.NetworkHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
@@ -81,8 +79,6 @@ public class EventsHandler {
             player.getCapability(EnergyShieldProvider.INSTANCE).ifPresent(shield -> {
                 shield.resetTicksSinceLastDamage();
 
-                LOGGER.info(String.valueOf(shield.getShield()));
-
                float currentShield = shield.getShield();
                 if (currentShield > 0) {
                     float absorbed = Math.min(event.getAmount(), currentShield);
@@ -131,7 +127,7 @@ public class EventsHandler {
                 int delayTicks = (int) (shieldDelay * 20);
 
                 if (current == 0 && player.tickCount % 10 == 0) {
-                    player.addEffect(new MobEffectInstance(EffectRegister.SPENT_SHIELD.get(), 20, 0));
+                    player.addEffect(new MobEffectInstance(EffectRegister.SPENT_SHIELD.get(), 10, 0));
                 }
 
                 if (lastDamage >= delayTicks) {
