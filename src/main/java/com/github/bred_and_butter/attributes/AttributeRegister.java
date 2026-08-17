@@ -42,4 +42,24 @@ public class AttributeRegister {
             ATTRIBUTES.register("life_steal",
                     () -> new RangedAttribute("attribute.simpleattributes.life_steal", 0.0, 0.0, 1024.0)
                             .setSyncable(true));
+
+    public static final RegistryObject<Attribute> BUFF_DURATION =
+            ATTRIBUTES.register("buff_duration",
+                    () -> new RangedAttribute("attribute.simpleattributes.buff_duration", 0.0, -100.0, 1024.0)
+                            .setSyncable(true));
+
+    public static final RegistryObject<Attribute> DEBUFF_DURATION_REDUCTION =
+            ATTRIBUTES.register("debuff_duration_reduction",
+                    () -> new RangedAttribute("attribute.simpleattributes.debuff_duration_reduction", 0.0, -1024.0, 100.0)
+                            .setSyncable(true));
+
+    public static final RegistryObject<Attribute> BUFF_AMP =
+            ATTRIBUTES.register("buff_amp",
+                    () -> new RangedAttribute("attribute.simpleattributes.buff_amp", 0.0, -100.0, 100.0)
+                            .setSyncable(true));
+
+    public static final RegistryObject<Attribute> DEBUFF_AMP_REDUCTION =
+            ATTRIBUTES.register("debuff_amp_reduction",
+                    () -> new RangedAttribute("attribute.simpleattributes.debuff_amp_reduction", 0.0, -100.0, 100.0)
+                            .setSyncable(true));
 }

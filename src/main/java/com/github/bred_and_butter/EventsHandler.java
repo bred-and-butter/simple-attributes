@@ -4,12 +4,16 @@ import com.github.bred_and_butter.attributes.AttributeRegister;
 import com.github.bred_and_butter.capabilities.energy_shield.EnergyShield;
 import com.github.bred_and_butter.capabilities.energy_shield.EnergyShieldProvider;
 import com.github.bred_and_butter.effects.EffectRegister;
+import com.github.bred_and_butter.mixin.MobEffectInstanceAccessor;
 import com.github.bred_and_butter.network.NetworkHandler;
+import com.github.bred_and_butter.util.InterfaceAmplifier;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -17,6 +21,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -93,18 +98,6 @@ public class EventsHandler {
     }
 
     @SubscribeEvent
-    public static void lifeSteal(LivingDamageEvent event) {
-        Player player;
-        Entity entity = event.getSource().getEntity();
-        if (entity instanceof Player) {
-            player = (Player) entity;
-        } else return;
-
-        double lifeSteal = player.getAttributeValue(AttributeRegister.LIFE_STEAL.get());
-        player.heal((float) (event.getAmount() * lifeSteal/100));
-    }
-
-    @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide) return;
 
@@ -144,6 +137,84 @@ public class EventsHandler {
                 }
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void lifeSteal(LivingDamageEvent event) {
+        Player player;
+        Entity entity = event.getSource().getEntity();
+        if (entity instanceof Player) {
+            player = (Player) entity;
+        } else return;
+
+        double lifeSteal = player.getAttributeValue(AttributeRegister.LIFE_STEAL.get());
+        player.heal((float) (event.getAmount() * lifeSteal/100));
+    }
+
+    @SubscribeEvent
+    public static void calculateEffectDuration(MobEffectEvent.Added event) {
+        LivingEntity entity = event.getEntity();
+        ServerPlayer player;
+        if (entity instanceof ServerPlayer) {
+            player = (ServerPlayer)entity;
+        } else {
+            return;
+        }
+
+        double buff_duration = player.getAttributeValue(AttributeRegister.BUFF_DURATION.get());
+        double debuff_duration_reduction = player.getAttributeValue(AttributeRegister.DEBUFF_DURATION_REDUCTION.get());
+
+        MobEffectInstance effectInstance = event.getEffectInstance();
+
+        int originalDuration = effectInstance.getDuration();
+        if (effectInstance.getEffect().isBeneficial()) {
+            if (buff_duration >= 1.0) {
+                int increasedDuration = (int)(originalDuration * (1.0 + buff_duration/100.0));
+                ((MobEffectInstanceAccessor)effectInstance).setDuration(increasedDuration);
+            } else if (buff_duration <= -1.0) {
+                int reducedDuration = (int)(originalDuration * (1.0 + buff_duration/100.0));
+                ((MobEffectInstanceAccessor)effectInstance).setDuration(reducedDuration);
+            }
+        } else if (!effectInstance.getEffect().isBeneficial()) {
+            if (debuff_duration_reduction >= 1.0) {
+                int reducedDuration = (int)(originalDuration * (1.0D - debuff_duration_reduction/100.0D));
+                ((MobEffectInstanceAccessor)effectInstance).setDuration(reducedDuration);
+            } else if (debuff_duration_reduction <= -1.0) {
+                int increasedDuration = (int)(originalDuration * (1.0D - debuff_duration_reduction/100.0));
+                ((MobEffectInstanceAccessor)effectInstance).setDuration(increasedDuration);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void calculateEffectAmp(MobEffectEvent.Added event) {
+        LivingEntity entity = event.getEntity();
+        ServerPlayer player;
+        if (entity instanceof ServerPlayer) {
+            player = (ServerPlayer)entity;
+        } else {
+            return;
+        }
+
+        double buff_amp = player.getAttributeValue(AttributeRegister.BUFF_AMP.get());
+        double debuff_amp_reduction = player.getAttributeValue(AttributeRegister.DEBUFF_AMP_REDUCTION.get());
+
+        MobEffectInstance effectInstance = event.getEffectInstance();
+        
+        int originalAmp = effectInstance.getAmplifier();
+        if (effectInstance.getEffect().isBeneficial()) {
+            if (buff_amp >= 1.0) {
+                ((InterfaceAmplifier)effectInstance).simple_attributes$setAmplifier((int) (originalAmp + Math.floor(buff_amp)));
+            } else if (buff_amp <= -1.0) {
+                ((InterfaceAmplifier)effectInstance).simple_attributes$setAmplifier((int) (Math.max(originalAmp + Math.floor(buff_amp), 0)));
+            }
+        } else if (!effectInstance.getEffect().isBeneficial()) {
+            if (debuff_amp_reduction >= 1.0) {
+                ((InterfaceAmplifier)effectInstance).simple_attributes$setAmplifier((int) (Math.max(originalAmp - Math.floor(debuff_amp_reduction), 0)));
+            } else if (debuff_amp_reduction <= -1.0) {
+                ((InterfaceAmplifier)effectInstance).simple_attributes$setAmplifier((int) (originalAmp - Math.floor(debuff_amp_reduction)));
+            }
+        }
     }
 
     @SubscribeEvent
