@@ -7,7 +7,6 @@ import com.github.bred_and_butter.effects.EffectRegister;
 import com.github.bred_and_butter.mixin.MobEffectInstanceAccessor;
 import com.github.bred_and_butter.network.NetworkHandler;
 import com.github.bred_and_butter.util.InterfaceAmplifier;
-import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -25,12 +24,9 @@ import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.slf4j.Logger;
 
 @Mod.EventBusSubscriber(modid = SimpleAttributes.MODID)
 public class EventsHandler {
-    private static final Logger LOGGER = LogUtils.getLogger();
-
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();

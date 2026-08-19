@@ -9,14 +9,15 @@
   "attribute.simpleattributes.debuff_duration_reduction": "Debuff Duration Reduction",
   "attribute.simpleattributes.buff_amp": "Buff Amp",
   "attribute.simpleattributes.debuff_amp_reduction": "Debuff Amp Reduction",
+  "attribute.simpleattributes.mana_leech": "Mana Leech",
 
-  "effect.simpleattributes.broken_shield": "Broken Energy Shield",
+  "effect.simpleattributes.broken_shield": "Broken Shield",
   "effect.simpleattributes.shield_boost": "Shield Boost",
   "effect.simpleattributes.fast_regen": "Fast Shield Regen",
   "effect.simpleattributes.instant_shield": "Instant Shield",
   "effect.simpleattributes.regenerating": "Regenerating Shield",
   "effect.simpleattributes.spent_shield": "Spent Shield",
-  "effect.simpleattributes.reduced_shield": "Reduced Energy Shield",
+  "effect.simpleattributes.reduced_shield": "Reduced Shield",
 
   "effect.simpleattributes.broken_shield.description": "Broken Energy Shield",
   "effect.simpleattributes.shield_boost.description": "Energy Shield Boost",

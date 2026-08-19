@@ -11,6 +11,6 @@ public class ReducedShieldEffect extends MobEffect {
     public ReducedShieldEffect(MobEffectCategory category, int color) {
         super(category, color);
 
-        this.addAttributeModifier(AttributeRegister.ENERGY_SHIELD_MAX.get(), UUID_STRING, -0.5f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        this.addAttributeModifier(AttributeRegister.ENERGY_SHIELD_MAX.get(), UUID_STRING, -2.0f, AttributeModifier.Operation.ADDITION);
     }
 }

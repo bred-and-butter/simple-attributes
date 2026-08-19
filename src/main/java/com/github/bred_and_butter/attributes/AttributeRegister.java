@@ -62,4 +62,9 @@ public class AttributeRegister {
             ATTRIBUTES.register("debuff_amp_reduction",
                     () -> new RangedAttribute("attribute.simpleattributes.debuff_amp_reduction", 0.0, -100.0, 100.0)
                             .setSyncable(true));
+
+    public static final RegistryObject<Attribute> MANA_LEECH =
+            ATTRIBUTES.register("mana_leech",
+                    () -> new RangedAttribute("attribute.simpleattributes.mana_leech", 0.0, 0.0, 1024.0)
+                            .setSyncable(true));
 }

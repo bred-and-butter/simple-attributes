@@ -1,6 +1,6 @@
 package com.github.bred_and_butter;
 
-import com.github.bred_and_butter.effects.EffectRegister;
+import com.github.bred_and_butter.attributes.IronsSpellbooksCompat;
 import com.github.bred_and_butter.network.NetworkHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
@@ -8,6 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -42,6 +43,10 @@ public class SimpleAttributes
         MOB_EFFECTS.register(modEventBus);
 
         NetworkHandler.register();
+
+        if (ModList.get().isLoaded("irons_spellbooks")) {
+            MinecraftForge.EVENT_BUS.register(IronsSpellbooksCompat.class);
+        }
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
