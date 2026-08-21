@@ -116,7 +116,7 @@ public class EventsHandler {
                 int delayTicks = (int) (shieldDelay * 20);
 
                 if (current == 0 && player.tickCount % 10 == 0) {
-                    player.addEffect(new MobEffectInstance(EffectRegister.SPENT_SHIELD.get(), 10, 0));
+                    //player.addEffect(new MobEffectInstance(EffectRegister.SPENT_SHIELD.get(), 10, 0));
                 }
 
                 if (lastDamage >= delayTicks) {
@@ -124,7 +124,7 @@ public class EventsHandler {
                     if (player.tickCount % 10 == 0) {
                         float newShield = (float) Math.min(maxShield, current + rate);
                         shield.setShield(newShield);
-                        player.addEffect(new MobEffectInstance(EffectRegister.REGENERATING.get(), 20, 0));
+                        //player.addEffect(new MobEffectInstance(EffectRegister.REGENERATING.get(), 20, 0));
 
                         NetworkHandler.syncShieldToClient(player, shield);
                     }
